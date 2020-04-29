@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="ru.diploma.qr.ui.scanner.ScannerFragment"
+        android:label="@string/title_scan"
+        tools:layout="@layout/fragment_scanner" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="ru.diploma.qr.ui.generating.GenerateFragment"
+        android:label="@string/title_generator"
+        tools:layout="@layout/fragment_generate" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="ru.diploma.qr.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_notifications_to_generatedHistory"
+            app:destination="@id/generatedHistory" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_scanHistory"
+            app:destination="@id/scanHistory" />
+    </fragment>
+    <fragment
+        android:id="@+id/generatedHistory"
+        android:name="ru.diploma.qr.ui.history.generate.GeneratedHistory"
+        android:label="fragment_generate_history"
+        tools:layout="@layout/fragment_generate_history" />
+    <fragment
+        android:id="@+id/scanHistory"
+        android:name="ru.diploma.qr.ui.history.scanner.ScanHistory"
+        android:label="fragment_scanner_history"
+        tools:layout="@layout/fragment_scanner_history" />
+</navigation>
