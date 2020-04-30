@@ -174,13 +174,13 @@ public class ScannerFragment extends Fragment {
 
                             if (!qrCodes.valueAt(0).displayValue.equals(value[0])) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                                    AudioAttributes audio = new AudioAttributes.Builder()
                                             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                                             .setUsage(AudioAttributes.USAGE_ALARM)
                                             .build();
                                     VibrationEffect ve = VibrationEffect.createOneShot(2000,
                                             VibrationEffect.DEFAULT_AMPLITUDE);
-                                    vibrator.vibrate(ve, audioAttributes);
+                                    vibrator.vibrate(ve, audio);
                                 } else {
                                     vibrator.vibrate(2000);
                                 }
