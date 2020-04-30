@@ -5,13 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import ru.diploma.qr.R;
@@ -20,6 +17,8 @@ public class ProfileFragment extends Fragment {
 
     private LinearLayout llGenerate;
     private LinearLayout llHistory;
+    private LinearLayout llContactUs;
+    private LinearLayout llHelp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,18 +29,32 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         llGenerate = view.findViewById(R.id.ll_generate);
-        llGenerate.setOnClickListener(new View.OnClickListener(){
+        llGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_generatedHistory);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_generatedHistory);
             }
         });
         llHistory = view.findViewById(R.id.ll_scanner);
         llHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_scanHistory);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_scanHistory);
 
+            }
+        });
+        llContactUs = view.findViewById(R.id.ll_contact_us);
+        llContactUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_fragmentContactUs);
+            }
+        });
+        llHelp = view.findViewById(R.id.ll_help);
+        llHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.action_navigation_notifications_to_fragmentHelp);
             }
         });
     }

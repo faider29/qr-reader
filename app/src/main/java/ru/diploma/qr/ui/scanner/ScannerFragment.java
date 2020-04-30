@@ -8,8 +8,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.SparseArray;
@@ -46,6 +50,8 @@ import ru.diploma.qr.R;
 import ru.diploma.qr.ui.history.generate.model.GenerateModel;
 import ru.diploma.qr.ui.history.scanner.model.ScanModel;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+
 public class ScannerFragment extends Fragment {
 
 
@@ -62,9 +68,12 @@ public class ScannerFragment extends Fragment {
     private List<ScanModel> scanModelList = new ArrayList<>();
     private static final int PERMISSION_CODE = 1001;
     private static final int SELECT_IMAGE = 1000;
+    private Vibrator vibrator;
+    private SoundPool soundPool;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_scanner, container, false);
     }
 
@@ -72,6 +81,7 @@ public class ScannerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadData();
+        vibrator = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         flash = view.findViewById(R.id.iv_flash);
         qrResultText = view.findViewById(R.id.tv_qr_result);
         galleryImageView = view.findViewById(R.id.iv_gallery);
@@ -147,6 +157,7 @@ public class ScannerFragment extends Fragment {
                 cameraSource.stop();
             }
         });
+
         final String[] value = {""};
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
@@ -159,14 +170,25 @@ public class ScannerFragment extends Fragment {
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
                 if (qrCodes.size() != 0) {
+                    AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build();
+                    soundPool = new SoundPool.Builder()
+                            .setAudioAttributes(audioAttributes)
+                            .build();
+                    soundPool.play(1,1,1,0,0,1);
                     qrResultText.post(new Runnable() {
                         @Override
                         public void run() {
-                            Vibrator vibrator = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(1000);
                             qrResultText.setText(qrCodes.valueAt(0).displayValue);
 
                             if(!qrCodes.valueAt(0).displayValue.equals(value[0])) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    vibrator.vibrate(VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                } else {
+                                    vibrator.vibrate(2000);
+                                }
                                 value[0] = qrCodes.valueAt(0).displayValue;
                                 ScanModel scanModel = new ScanModel();
                                 scanModel.setText(qrCodes.valueAt(0).displayValue);

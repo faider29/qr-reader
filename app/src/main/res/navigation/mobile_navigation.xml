@@ -29,6 +29,12 @@
         <action
             android:id="@+id/action_navigation_notifications_to_scanHistory"
             app:destination="@id/scanHistory" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_fragmentContactUs"
+            app:destination="@id/fragmentContactUs" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_fragmentHelp"
+            app:destination="@id/fragmentHelp" />
     </fragment>
     <fragment
         android:id="@+id/generatedHistory"
@@ -40,4 +46,14 @@
         android:name="ru.diploma.qr.ui.history.scanner.ScanHistory"
         android:label="fragment_scanner_history"
         tools:layout="@layout/fragment_scanner_history" />
+    <fragment
+        android:id="@+id/fragmentContactUs"
+        android:name="ru.diploma.qr.ui.contactUs.FragmentContactUs"
+        android:label="fragment_contact_us"
+        tools:layout="@layout/fragment_contact_us" />
+    <fragment
+        android:id="@+id/fragmentHelp"
+        android:name="ru.diploma.qr.ui.help.FragmentHelp"
+        android:label="fragment_help"
+        tools:layout="@layout/fragment_help" />
 </navigation>
