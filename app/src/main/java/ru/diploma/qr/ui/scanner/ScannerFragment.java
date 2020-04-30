@@ -12,7 +12,6 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.MediaStore;
@@ -39,7 +38,6 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -54,15 +52,13 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 public class ScannerFragment extends Fragment {
 
-
     private CameraSource cameraSource;
     private TextView qrResultText;
-    private TextView title;
     private ImageView flash;
     private BarcodeDetector barcodeDetector;
     private SurfaceView surfaceView;
     private Camera camera = null;
-    boolean flashmode = false;
+    private boolean flashMode = false;
     private View globalView;
     private ImageView galleryImageView;
     private List<ScanModel> scanModelList = new ArrayList<>();
@@ -81,7 +77,7 @@ public class ScannerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadData();
-        vibrator = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator = (Vibrator) getActivity().getApplicationContext().getSystemService(VIBRATOR_SERVICE);
         flash = view.findViewById(R.id.iv_flash);
         qrResultText = view.findViewById(R.id.tv_qr_result);
         galleryImageView = view.findViewById(R.id.iv_gallery);
@@ -109,6 +105,7 @@ public class ScannerFragment extends Fragment {
         });
 
     }
+
     private void loadData() {
         SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -125,7 +122,7 @@ public class ScannerFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
     }
 
     private void setCameraSource(View root) {
@@ -170,25 +167,24 @@ public class ScannerFragment extends Fragment {
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
                 if (qrCodes.size() != 0) {
-                    AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .build();
-                    soundPool = new SoundPool.Builder()
-                            .setAudioAttributes(audioAttributes)
-                            .build();
-                    soundPool.play(1,1,1,0,0,1);
                     qrResultText.post(new Runnable() {
                         @Override
                         public void run() {
                             qrResultText.setText(qrCodes.valueAt(0).displayValue);
 
-                            if(!qrCodes.valueAt(0).displayValue.equals(value[0])) {
+                            if (!qrCodes.valueAt(0).displayValue.equals(value[0])) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE));
+                                    AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                            .setUsage(AudioAttributes.USAGE_ALARM)
+                                            .build();
+                                    VibrationEffect ve = VibrationEffect.createOneShot(2000,
+                                            VibrationEffect.DEFAULT_AMPLITUDE);
+                                    vibrator.vibrate(ve, audioAttributes);
                                 } else {
                                     vibrator.vibrate(2000);
                                 }
+
                                 value[0] = qrCodes.valueAt(0).displayValue;
                                 ScanModel scanModel = new ScanModel();
                                 scanModel.setText(qrCodes.valueAt(0).displayValue);
@@ -230,16 +226,16 @@ public class ScannerFragment extends Fragment {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
                         Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-                        SparseArray<Barcode>  barcodes = barcodeDetector.detect(frame);
-                            if(barcodes.size() != 0){
-                                qrResultText.setText(barcodes.valueAt(0).displayValue);
-                            }
+                        SparseArray<Barcode> barcodes = barcodeDetector.detect(frame);
+                        if (barcodes.size() != 0) {
+                            qrResultText.setText(barcodes.valueAt(0).displayValue);
+                        }
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED)  {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(getActivity(), "Canceled", Toast.LENGTH_SHORT).show();
             }
         }
@@ -254,9 +250,9 @@ public class ScannerFragment extends Fragment {
         if (camera != null) {
             try {
                 Camera.Parameters param = camera.getParameters();
-                param.setFlashMode(!flashmode ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
+                param.setFlashMode(!flashMode ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
                 camera.setParameters(param);
-                flashmode = !flashmode;
+                flashMode = !flashMode;
             } catch (Exception e) {
                 e.printStackTrace();
             }
