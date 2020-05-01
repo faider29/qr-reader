@@ -177,7 +177,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_image"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@android:drawable/stat_sys_download_done" />
+            app:srcCompat="@drawable/ic_download" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/actionBar"

@@ -1,6 +1,5 @@
 package ru.diploma.qr.ui.history.generate.model;
 
-import android.graphics.Bitmap;
 
 import androidmads.library.qrgenearator.QRGEncoder;
 

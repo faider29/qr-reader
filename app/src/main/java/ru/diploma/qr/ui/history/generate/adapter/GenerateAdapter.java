@@ -2,6 +2,7 @@ package ru.diploma.qr.ui.history.generate.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -54,13 +56,28 @@ public class GenerateAdapter  extends RecyclerView.Adapter<GenerateAdapter.ViewH
         return generateModelList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         private TextView textView;
         private ImageView imageView;
+        private CardView cardView;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_tv_generate);
             imageView = itemView.findViewById(R.id.item_iv_generate);
+            cardView = itemView.findViewById(R.id.card_view_generate);
+            cardView.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+            menu.add(this.getAdapterPosition(), 121,0,"Сохранить QR-код");
+            menu.add(this.getAdapterPosition(), 122,1,"Удалить из истории");
+        }
+    }
+
+    public void removeItem(int position){
+        generateModelList.remove(position);
+        notifyDataSetChanged();
     }
 }

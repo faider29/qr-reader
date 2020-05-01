@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
@@ -65,6 +66,10 @@ public class ScannerFragment extends Fragment {
     private static final int PERMISSION_CODE = 1001;
     private static final int SELECT_IMAGE = 1000;
     private Vibrator vibrator;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private Boolean isChecked;
+    private int soundNotification;
     private SoundPool soundPool;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -76,6 +81,22 @@ public class ScannerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(1)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        }
+        soundNotification = soundPool.load(getContext(), R.raw.sound_notification, 1);
+        isChecked = sharedPreferences.getBoolean("checkBox", true);
         loadData();
         vibrator = (Vibrator) getActivity().getApplicationContext().getSystemService(VIBRATOR_SERVICE);
         flash = view.findViewById(R.id.iv_flash);
@@ -107,7 +128,6 @@ public class ScannerFragment extends Fragment {
     }
 
     private void loadData() {
-        SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("taskListScanner", null);
         Type type = new TypeToken<ArrayList<GenerateModel>>() {
@@ -167,12 +187,17 @@ public class ScannerFragment extends Fragment {
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
                 if (qrCodes.size() != 0) {
+
                     qrResultText.post(new Runnable() {
                         @Override
                         public void run() {
                             qrResultText.setText(qrCodes.valueAt(0).displayValue);
 
                             if (!qrCodes.valueAt(0).displayValue.equals(value[0])) {
+
+                                if (isChecked) {
+                                    soundPool.play(soundNotification,1,1,0,0,1);
+                                }
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     AudioAttributes audio = new AudioAttributes.Builder()
                                             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -189,8 +214,6 @@ public class ScannerFragment extends Fragment {
                                 ScanModel scanModel = new ScanModel();
                                 scanModel.setText(qrCodes.valueAt(0).displayValue);
                                 scanModelList.add(scanModel);
-                                SharedPreferences sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
                                 Gson gson = new Gson();
                                 String json = gson.toJson(scanModelList);
                                 editor.putString("taskListScanner", json);

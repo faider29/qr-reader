@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="18sp"/>
-        <RadioButton
+        <CheckBox
             android:id="@+id/volume_check_box"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"

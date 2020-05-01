@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="6dp"
     android:elevation="8dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:id="@+id/card_view_generate">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

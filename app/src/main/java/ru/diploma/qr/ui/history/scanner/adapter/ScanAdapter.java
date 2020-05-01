@@ -3,6 +3,7 @@ package ru.diploma.qr.ui.history.scanner.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -69,13 +71,26 @@ public class ScanAdapter extends RecyclerView.Adapter<ScanAdapter.ViewHolder> {
         }
 
     }
-    public class ViewHolder extends  RecyclerView.ViewHolder{
+    public class ViewHolder extends  RecyclerView.ViewHolder implements  View.OnCreateContextMenuListener{
         private TextView textView;
         private ImageView imageView;
+        private CardView cardView;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.item_tv_scanner);
             imageView = itemView.findViewById(R.id.item_iv_scanner);
+            cardView = itemView.findViewById(R.id.card_view_scanner);
+            cardView.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(this.getAdapterPosition(), 123,0,"Сохранить QR-код");
+            menu.add(this.getAdapterPosition(), 124,1,"Удалить из истории");
+        }
+    }
+    public void removeItem(int position) {
+        scanModelList.remove(position);
+        notifyDataSetChanged();
     }
 }

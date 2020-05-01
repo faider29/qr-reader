@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1033357062534",
+    "firebase_url": "https://qr-reader-57db2.firebaseio.com",
+    "project_id": "qr-reader-57db2",
+    "storage_bucket": "qr-reader-57db2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033357062534:android:2b84ac83c8f621a820bc07",
+        "android_client_info": {
+          "package_name": "ru.diploma.qr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033357062534-q64oeb2jhsl58nfrm34qkr0oi46pqu60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAEpfAkCYk3rwps1cCPu57jgbjjjb3_LM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033357062534-q64oeb2jhsl58nfrm34qkr0oi46pqu60.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
