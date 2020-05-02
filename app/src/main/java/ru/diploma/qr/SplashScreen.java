@@ -35,11 +35,11 @@ public class SplashScreen extends AppCompatActivity {
 
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(0)
+                .setMinimumFetchIntervalInSeconds(10)
                 .build();
         firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         Map<String, Object> defaultData = new HashMap<>();
-        defaultData.put("can_use", false);
+        defaultData.put("can_use", true);
         firebaseRemoteConfig.setDefaultsAsync(defaultData);
         final Task<Void> fetch = firebaseRemoteConfig.fetch(0);
         fetch.addOnSuccessListener(this, new OnSuccessListener<Void>() {

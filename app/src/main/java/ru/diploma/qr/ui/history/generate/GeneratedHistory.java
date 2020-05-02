@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,9 +99,11 @@ public class GeneratedHistory extends Fragment {
     private void saveQrCode(GenerateModel generateModel) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             try {
-                boolean save = new QRGSaver().save(savePath, generateModel.getText().trim(), generateModel.getImg().getBitmap(), QRGContents.ImageType.IMAGE_JPEG);
-                String result = save ? "QR-код сохранен" : "Не удалось сохранить";
-                showToast(result);
+//                boolean save = new QRGSaver().save(savePath, generateModel.getText().trim(), generateModel.getImg().getBitmap(), QRGContents.ImageType.IMAGE_JPEG);
+//                String result = save ? "QR-код сохранен" : "Не удалось сохранить";
+                MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),generateModel.getImg().getBitmap(),generateModel.getText().trim(),null);
+                Toast.makeText(getContext(), "Qr-код Сохранен", Toast.LENGTH_SHORT).show();
+//                showToast(result);
             } catch (Exception e) {
                 e.printStackTrace();
             }
