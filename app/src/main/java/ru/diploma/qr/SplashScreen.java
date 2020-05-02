@@ -32,42 +32,49 @@ public class SplashScreen extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.SplashTheme);
         super.onCreate(savedInstanceState);
-
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(10)
-                .build();
-        firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        Map<String, Object> defaultData = new HashMap<>();
-        defaultData.put("can_use", true);
-        firebaseRemoteConfig.setDefaultsAsync(defaultData);
-        final Task<Void> fetch = firebaseRemoteConfig.fetch(0);
-        fetch.addOnSuccessListener(this, new OnSuccessListener<Void>() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onSuccess(Void aVoid) {
-                firebaseRemoteConfig.fetchAndActivate();
-                boolean boolData = firebaseRemoteConfig.getBoolean("can_use");
-                if(!boolData){
-                    showAlertDialog();
-                } else {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
-                            startActivity(mainIntent);
-                            finish();
-                        }
-                    }, SPLASH_DELAY);
-                }
+            public void run() {
+                Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+                startActivity(mainIntent);
+                finish();
             }
-        });
+        }, SPLASH_DELAY);
+//        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+//                .setMinimumFetchIntervalInSeconds(10)
+//                .build();
+//        firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+//        Map<String, Object> defaultData = new HashMap<>();
+//        defaultData.put("can_use", true);
+//        firebaseRemoteConfig.setDefaultsAsync(defaultData);
+//        final Task<Void> fetch = firebaseRemoteConfig.fetch(0);
+//        fetch.addOnSuccessListener(this, new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                firebaseRemoteConfig.fetchAndActivate();
+//                boolean boolData = firebaseRemoteConfig.getBoolean("can_use");
+//                if(!boolData){
+//                    showAlertDialog();
+//                } else {
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+//                            startActivity(mainIntent);
+//                            finish();
+//                        }
+//                    }, SPLASH_DELAY);
+//                }
+//            }
+//        });
     }
-    private void showAlertDialog() {
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Внимание")
-                .setMessage("Время пробной версии приложения истекло. Обратитесь к администратору")
-                .show();
-        dialog.setCancelable(false);
-    }
+//    private void showAlertDialog() {
+//        final AlertDialog dialog = new AlertDialog.Builder(this)
+//                .setTitle("Внимание")
+//                .setMessage("Время пробной версии приложения истекло. Обратитесь к администратору")
+//                .show();
+//        dialog.setCancelable(false);
+//    }
 
 }
